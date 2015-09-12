@@ -71,18 +71,11 @@ function widget:Initialize()
     widgetHandler:RemoveWidget()
     return
   end
-
-  enabled = (Spring.GetMapOptions().weather == "snow")
-
---widgetHandler:AddChatAction("rain", ChatAction,
---  ':  [0|1]  [speed val]  [scale val]  [density val]  [texture name]'
---)
 end
 
 
 function widget:Shutdown()
   FreeResources()
-  widgetHandler:RemoveChatAction("rain")
 end
 
 
@@ -108,52 +101,6 @@ function FreeResources()
   rainList = nil
   particleList = nil
 end
-
-
-function ChatAction(cmd, line, words, player)
-  --Spring.Echo(cmd,' : ',line ' : ',words, ':',player)
-  if (player ~= 0) then
-    Spring.Echo('Only the host can control the weather')
-    return true
-  end
-  if (#words == 0) then
-    enabled = not enabled
-    Spring.Echo("rain is " .. (enabled and 'enabled' or 'disabled'))
-    return
-  end
-  if (words[1] == '0') then
-    enabled = false
-    Spring.Echo("rain is disabled")
-  elseif (words[1] == '1') then
-    enabled = true
-    Spring.Echo("rain is enabled")
-  elseif (words[1] == 'scale') then
-    local value = tonumber(words[2])
-    if (value and (value > 0)) then
-      SCALE = value
-      ReloadResources()
-    end
-  elseif (words[1] == 'speed') then
-    local value = tonumber(words[2])
-    if (value) then
-      SPEED = value
-      ReloadResources()
-    end
-  elseif (words[1] == 'density') then
-    local value = tonumber(words[2])
-    if (value and (value > 0) and (value <= 1000000)) then
-      DENSITY = value
-      ReloadResources()
-    end
-  elseif (words[1] == 'texture') then
-    if (type(words[2]) == 'string') then
-      TEXTURE = words[2]
-      ReloadResources()
-    end
-  end
-  return true
-end
-
 
 function CreateParticleList()
   particleList = gl.CreateList(function()
